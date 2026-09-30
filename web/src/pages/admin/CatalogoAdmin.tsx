@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { api } from '../../lib/api';
 import { CATEGORY_LABEL, ProductCard, STOCK_LABEL } from '../../components/Catalogo';
 import type { Product, ProductCategory, ProductStock, Settings } from '../../lib/types';
@@ -50,14 +50,55 @@ export function CatalogoAdmin({
 }) {
   const [creando, setCreando] = useState(false);
   const [editando, setEditando] = useState<number | null>(null);
+  const [filtro, setFiltro] = useState<ProductCategory | 'todo'>('todo');
+  const [busca, setBusca] = useState('');
+
+  /* Un vistazo rápido: cuántos hay, cuántos sin foto y cuántos agotados */
+  const resumen = useMemo(
+    () => ({
+      total: products.length,
+      sinFoto: products.filter((p) => !p.image).length,
+      agotados: products.filter((p) => p.stock === 'agotado').length,
+      destacados: products.filter((p) => p.featured === 1).length
+    }),
+    [products]
+  );
+
+  const cuentaPorCategoria = useMemo(() => {
+    const m = new Map<ProductCategory, number>();
+    for (const p of products) m.set(p.category, (m.get(p.category) ?? 0) + 1);
+    return m;
+  }, [products]);
+
+  const visibles = useMemo(() => {
+    const texto = busca
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+    return products.filter((p) => {
+      if (filtro !== 'todo' && p.category !== filtro) return false;
+      if (!texto) return true;
+      return `${p.name} ${p.description}`
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .includes(texto);
+    });
+  }, [products, filtro, busca]);
+
+  const grupos = useMemo(() => {
+    if (filtro !== 'todo') return [['', visibles] as const];
+    return CATEGORIES.map((c) => [c, visibles.filter((p) => p.category === c)] as const).filter(([, l]) => l.length > 0);
+  }, [visibles, filtro]);
 
   return (
     <>
-      <div className="card panel" style={{ marginBottom: 20 }}>
+      <div className="card panel" style={{ marginBottom: 18 }}>
         <h3>El escaparate de la web</h3>
         <p style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>
-          Cada tarjeta que crees aquí sale en la portada con su foto, su precio y su descripción. Es solo informativo:
-          nadie compra por la web, la gente te escribe por Instagram.
+          Cada tarjeta sale en la portada con su foto, su precio y un botón que abre WhatsApp al{' '}
+          <strong style={{ color: 'var(--olive-soft)' }}>{settings.order_phone || 'teléfono sin poner'}</strong> con el
+          nombre del producto ya escrito. Es solo informativo: nadie paga por la web.
           {settings.site_mode !== 'catalogo' && (
             <>
               {' '}
@@ -68,60 +109,106 @@ export function CatalogoAdmin({
             </>
           )}
         </p>
+
+        <div className="catalog-stats">
+          <span><strong>{resumen.total}</strong> productos</span>
+          <span><strong>{resumen.destacados}</strong> destacados</span>
+          <span className={resumen.sinFoto ? 'is-warn' : ''}><strong>{resumen.sinFoto}</strong> sin foto</span>
+          <span className={resumen.agotados ? 'is-warn' : ''}><strong>{resumen.agotados}</strong> agotados</span>
+        </div>
+
         <button className="btn btn--primary btn--sm" onClick={() => { setCreando((v) => !v); setEditando(null); }}>
           {creando ? 'Cancelar' : '+ Nueva tarjeta'}
         </button>
       </div>
 
-      {creando && (
-        <FormularioProducto
-          run={run}
-          onDone={() => setCreando(false)}
-        />
+      {creando && <FormularioProducto run={run} onDone={() => setCreando(false)} />}
+
+      {products.length > 0 && (
+        <div className="catalog-bar" style={{ marginBottom: 20 }}>
+          <div className="filters">
+            <button className={`chip ${filtro === 'todo' ? 'is-active' : ''}`} onClick={() => setFiltro('todo')}>
+              Todo <small>{products.length}</small>
+            </button>
+            {CATEGORIES.filter((c) => cuentaPorCategoria.has(c)).map((c) => (
+              <button key={c} className={`chip ${filtro === c ? 'is-active' : ''}`} onClick={() => setFiltro(c)}>
+                {CATEGORY_LABEL[c]} <small>{cuentaPorCategoria.get(c)}</small>
+              </button>
+            ))}
+          </div>
+          <label className="buscador">
+            <input
+              className="input"
+              type="search"
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+              placeholder="Buscar en el catálogo…"
+            />
+          </label>
+        </div>
       )}
 
       {products.length === 0 ? (
         <div className="empty">Todavía no hay ninguna tarjeta. Crea la primera con el botón de arriba.</div>
+      ) : visibles.length === 0 ? (
+        <div className="empty">Ninguna tarjeta coincide con esa búsqueda.</div>
       ) : (
-        <div className="admin-catalog">
-          {products.map((p, i) => (
-            <div key={p.id} className="admin-catalog__item">
-              <ProductCard product={p} />
+        grupos.map(([cat, lista]) => (
+          <div key={cat || 'todos'} className="catalog-group">
+            {cat && (
+              <h3 className="catalog-group__title">
+                {CATEGORY_LABEL[cat as ProductCategory]}
+                <small>{lista.length}</small>
+              </h3>
+            )}
+            <div className="admin-catalog">
+              {lista.map((p, i) => (
+                <div key={p.id} className="admin-catalog__item">
+                  <ProductCard product={p} />
 
-              <div className="admin-catalog__tools">
-                <button className="mini-btn" onClick={() => { setEditando(editando === p.id ? null : p.id); setCreando(false); }}>
-                  {editando === p.id ? 'Cerrar' : 'Editar'}
-                </button>
-                <button
-                  className="mini-btn"
-                  disabled={i === 0}
-                  title="Subir en la lista"
-                  onClick={() => run(() => api.admin.products.move(p.id, 'arriba'), 'Movida')}
-                >
-                  ↑
-                </button>
-                <button
-                  className="mini-btn"
-                  disabled={i === products.length - 1}
-                  title="Bajar en la lista"
-                  onClick={() => run(() => api.admin.products.move(p.id, 'abajo'), 'Movida')}
-                >
-                  ↓
-                </button>
-                <button
-                  className="mini-btn mini-btn--danger"
-                  onClick={() => {
-                    if (confirm(`¿Quitar "${p.name}" del escaparate?`)) run(() => api.admin.products.remove(p.id), 'Tarjeta borrada');
-                  }}
-                >
-                  Borrar
-                </button>
-              </div>
+                  <div className="admin-catalog__tools">
+                    <button className="mini-btn" onClick={() => { setEditando(editando === p.id ? null : p.id); setCreando(false); }}>
+                      {editando === p.id ? 'Cerrar' : 'Editar'}
+                    </button>
+                    <button
+                      className="mini-btn"
+                      title={p.featured ? 'Quitar de destacados' : 'Destacar'}
+                      onClick={() => run(() => api.admin.products.update(p.id, { featured: !p.featured }), p.featured ? 'Ya no destaca' : 'Destacada')}
+                    >
+                      {p.featured ? '★' : '☆'}
+                    </button>
+                    <button
+                      className="mini-btn"
+                      disabled={i === 0}
+                      title="Subir en la lista"
+                      onClick={() => run(() => api.admin.products.move(p.id, 'arriba'), 'Movida')}
+                    >
+                      ↑
+                    </button>
+                    <button
+                      className="mini-btn"
+                      disabled={i === lista.length - 1}
+                      title="Bajar en la lista"
+                      onClick={() => run(() => api.admin.products.move(p.id, 'abajo'), 'Movida')}
+                    >
+                      ↓
+                    </button>
+                    <button
+                      className="mini-btn mini-btn--danger"
+                      onClick={() => {
+                        if (confirm(`¿Quitar "${p.name}" del escaparate?`)) run(() => api.admin.products.remove(p.id), 'Tarjeta borrada');
+                      }}
+                    >
+                      Borrar
+                    </button>
+                  </div>
 
-              {editando === p.id && <FormularioProducto product={p} run={run} onDone={() => setEditando(null)} />}
+                  {editando === p.id && <FormularioProducto product={p} run={run} onDone={() => setEditando(null)} />}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        ))
       )}
     </>
   );

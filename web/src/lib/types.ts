@@ -81,10 +81,11 @@ export interface Settings {
   /* 'catalogo' = escaparate de productos; 'completo' = la web entera */
   site_mode: 'catalogo' | 'completo';
   registration_open: boolean;
-  closure_title: string;
-  closure_notice: string;
-  reopen_date: string;
+  catalog_title: string;
   catalog_intro: string;
+  order_phone: string;
+  order_area: string;
+  order_notice: string;
   reservations_open: boolean;
   reservation_max_people: number;
   strikes_before_ban: number;

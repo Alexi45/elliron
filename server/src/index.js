@@ -59,7 +59,11 @@ app.use(compression());
 
 const origin = process.env.CORS_ORIGIN || true;
 app.use(cors({ origin, credentials: true }));
-app.use(express.json({ limit: '64kb' }));
+/* Los cuerpos son diminutos salvo el de las fotos, que tiene su propio
+   límite en la ruta de subida. Por eso ahí no se aplica este. */
+const RUTA_FOTOS = '/api/admin/products/image';
+const leerJson = express.json({ limit: '64kb' });
+app.use((req, res, next) => (req.path === RUTA_FOTOS ? next() : leerJson(req, res, next)));
 app.use(cookieParser());
 
 // Freno general para que nadie martillee la API
@@ -184,6 +188,12 @@ if (existsSync(dist)) {
 app.use('/api', (_req, res) => res.status(404).json({ error: 'Ese recurso no existe.' }));
 
 app.use((err, _req, res, _next) => {
+  if (err?.type === 'entity.too.large') {
+    return res.status(413).json({ error: 'Eso pesa demasiado para enviarlo de una vez.' });
+  }
+  if (err?.type === 'entity.parse.failed') {
+    return res.status(400).json({ error: 'No hemos entendido los datos enviados.' });
+  }
   console.error(err);
   res.status(500).json({ error: 'Algo ha fallado en el servidor.' });
 });

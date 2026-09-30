@@ -5,7 +5,7 @@ import { useAuth } from '../lib/auth';
 import { Reveal } from '../components/Reveal';
 import { TableBoard } from '../components/TableBoard';
 import { Visitanos } from '../components/Visitanos';
-import { AvisoCierre, Catalogo } from '../components/Catalogo';
+import { BarraPedido, CabeceraCatalogo, Catalogo } from '../components/Catalogo';
 import {
   IconArrow, IconBook, IconCalendar, IconClock, IconCoffee, IconDice,
   IconManga, IconMapPin, IconSparkles, IconTicket, IconUsers, Logo
@@ -110,14 +110,10 @@ export function Home({ state, live, lastUpdate, onRefresh }: Props) {
   if (settings.site_mode === 'catalogo') {
     return (
       <main className="catalog-page">
-        <AvisoCierre
-          title={settings.closure_title}
-          notice={settings.closure_notice}
-          reopen={settings.reopen_date}
-          instagram={settings.instagram}
-        />
-        <Catalogo products={state.products} intro={settings.catalog_intro} instagram={settings.instagram} />
+        <CabeceraCatalogo settings={settings} />
+        <Catalogo products={state.products} settings={settings} />
         <Visitanos settings={settings} todayIndex={todayIndex} showCta={false} />
+        <BarraPedido settings={settings} />
       </main>
     );
   }

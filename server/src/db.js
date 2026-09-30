@@ -238,12 +238,13 @@ export const DEFAULT_SETTINGS = {
   site_mode: 'catalogo',
   // ¿puede la gente crearse una cuenta? Con la tienda cerrada, no
   registration_open: false,
-  // El cartel que explica por qué está cerrado
-  closure_title: 'Estamos de obras',
-  closure_notice:
-    'Cerramos unos días por reformas. Mientras tanto te dejamos por aquí parte de lo que tenemos en la tienda: si te interesa algo, escríbenos por Instagram y te lo guardamos.',
-  reopen_date: '',
-  catalog_intro: 'Una selección de lo que vas a encontrar en la estantería. Los precios son los de tienda.',
+  // Cabecera del escaparate
+  catalog_title: 'Nuestro catálogo',
+  catalog_intro: 'Todo lo que tenemos en la tienda: Magic, juegos de mesa, libros y manga. Los precios son los de tienda.',
+  // Pedidos: el teléfono al que escribe la gente y hasta dónde llevamos
+  order_phone: '614060947',
+  order_area: 'Montequinto',
+  order_notice: 'Háblanos si quieres cualquier producto y te lo llevamos.',
   // ¿se aceptan reservas de mesa desde la web?
   reservations_open: true,
   reservation_max_people: 8,

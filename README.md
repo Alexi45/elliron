@@ -42,11 +42,16 @@ rótulo. El logo es la silueta del lirón, redibujada a partir de la fachada.
 `logo.webp` y la web lo usará automáticamente en todas partes, sin tocar una línea de código. Si no
 hay ninguno, se dibuja la silueta.
 
-## Modo «tienda cerrada»: el catálogo
+## Modo catálogo
 
-Con la tienda de obras, la web enseña **solo un escaparate de productos** y cómo llegar. Las mesas
+La web enseña **solo el escaparate de productos**, el teléfono de pedidos y cómo llegar. Las mesas
 en vivo, los torneos, la carta y las reservas **no se han borrado**: están escondidas detrás de un
 interruptor y vuelven enteras cuando quieras.
+
+El catálogo es informativo: la gente mira, ve el precio y **escribe por WhatsApp al teléfono de la
+tienda**. Cada tarjeta lleva un botón «Lo quiero» que abre la conversación con el nombre y el
+precio del producto ya escritos, y el número sale además en grande arriba y en una barra fija en el
+móvil.
 
 - **Cambiar de modo**: Panel → Ajustes → *Qué enseña la web* → «Solo catálogo» o «Web completa».
 - **Crear las tarjetas**: Panel → Catálogo → *Nueva tarjeta*. Cada una lleva foto, nombre,
@@ -54,7 +59,10 @@ interruptor y vuelven enteras cuando quieras.
   disponibilidad. Se ordenan con las flechas y se puede destacar una.
 - **Las fotos**: vale una foto del móvil. El navegador la encoge a 1200 px y la convierte a WebP
   antes de subirla, así que la web sigue cargando rápido.
-- **El cartel de obras** (titular, explicación y fecha de reapertura) se edita en Ajustes.
+- **La cabecera y el teléfono** (titular, frase de entrada, número, zona de reparto) se editan en
+  Ajustes.
+- **Las fotos se ven enteras**: nada de recortes. Una caja de mazo alta, un tomo o una caja de juego
+  se enseñan completos, con la propia foto difuminada detrás para rellenar los lados.
 - **Registro cerrado**: mientras la web sea informativa, nadie puede crearse una cuenta. El
   administrador entra igual por `/entrar`.
 

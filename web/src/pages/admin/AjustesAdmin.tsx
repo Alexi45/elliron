@@ -50,39 +50,20 @@ export function AjustesAdmin({ settings, run }: { settings: Settings; run: Runne
       </div>
 
       <div className="card panel">
-        <h3>El cartel de las obras</h3>
-        <div className="form-grid">
-          <div className="field">
-            <label>Titular</label>
-            <input
-              className="input"
-              value={draft.closure_title ?? ''}
-              onChange={(e) => setDraft({ ...draft, closure_title: e.target.value })}
-              placeholder="Estamos de obras"
-            />
-          </div>
-          <div className="field">
-            <label>Fecha de reapertura (texto libre)</label>
-            <input
-              className="input"
-              value={draft.reopen_date ?? ''}
-              onChange={(e) => setDraft({ ...draft, reopen_date: e.target.value })}
-              placeholder="11 de octubre"
-            />
-          </div>
-        </div>
+        <h3>La cabecera del catálogo</h3>
         <div className="field">
-          <label>Explicación</label>
-          <textarea
-            className="textarea"
-            value={draft.closure_notice ?? ''}
-            onChange={(e) => setDraft({ ...draft, closure_notice: e.target.value })}
+          <label>Titular</label>
+          <input
+            className="input"
+            value={draft.catalog_title ?? ''}
+            onChange={(e) => setDraft({ ...draft, catalog_title: e.target.value })}
+            placeholder="Nuestro catálogo"
           />
         </div>
         <div className="field">
-          <label>Frase de entrada al catálogo</label>
-          <input
-            className="input"
+          <label>Frase de entrada</label>
+          <textarea
+            className="textarea"
             value={draft.catalog_intro ?? ''}
             onChange={(e) => setDraft({ ...draft, catalog_intro: e.target.value })}
           />
@@ -91,18 +72,65 @@ export function AjustesAdmin({ settings, run }: { settings: Settings; run: Runne
           className="btn btn--primary btn--sm"
           onClick={() =>
             run(
-              () =>
-                api.admin.settings.update({
-                  closure_title: draft.closure_title,
-                  closure_notice: draft.closure_notice,
-                  reopen_date: draft.reopen_date,
-                  catalog_intro: draft.catalog_intro
-                }),
-              'Cartel guardado'
+              () => api.admin.settings.update({ catalog_title: draft.catalog_title, catalog_intro: draft.catalog_intro }),
+              'Cabecera guardada'
             )
           }
         >
-          Guardar el cartel
+          Guardar cabecera
+        </button>
+      </div>
+
+      <div className="card panel">
+        <h3>Pedidos por teléfono</h3>
+        <p style={{ color: 'var(--muted)', fontSize: '0.88rem' }}>
+          Este número sale en grande arriba, en la barra del móvil y en el botón «Lo quiero» de cada producto, que abre
+          WhatsApp con el nombre de lo que le interesa al cliente ya escrito.
+        </p>
+        <div className="form-grid">
+          <div className="field">
+            <label>Teléfono</label>
+            <input
+              className="input"
+              value={draft.order_phone ?? ''}
+              onChange={(e) => setDraft({ ...draft, order_phone: e.target.value })}
+              placeholder="614060947"
+            />
+          </div>
+          <div className="field">
+            <label>Hasta dónde lleváis</label>
+            <input
+              className="input"
+              value={draft.order_area ?? ''}
+              onChange={(e) => setDraft({ ...draft, order_area: e.target.value })}
+              placeholder="Montequinto"
+            />
+          </div>
+        </div>
+        <div className="field">
+          <label>Frase del aviso</label>
+          <input
+            className="input"
+            value={draft.order_notice ?? ''}
+            onChange={(e) => setDraft({ ...draft, order_notice: e.target.value })}
+            placeholder="Háblanos si quieres cualquier producto y te lo llevamos."
+          />
+        </div>
+        <button
+          className="btn btn--primary btn--sm"
+          onClick={() =>
+            run(
+              () =>
+                api.admin.settings.update({
+                  order_phone: draft.order_phone,
+                  order_area: draft.order_area,
+                  order_notice: draft.order_notice
+                }),
+              'Datos de pedidos guardados'
+            )
+          }
+        >
+          Guardar
         </button>
       </div>
 
