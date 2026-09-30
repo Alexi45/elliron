@@ -24,7 +24,7 @@ export default function App() {
 
       <Routes>
         <Route path="/admin" element={<AdminShell state={state} live={live} onChanged={refresh} />} />
-        <Route path="/entrar" element={<Entrar />} />
+        <Route path="/entrar" element={<Entrar state={state} />} />
         <Route path="/registro" element={<RegistroSiAbierto state={state} />} />
         <Route
           path="*"

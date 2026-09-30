@@ -2,12 +2,15 @@ import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { IconArrow, IconLock, Logo } from '../components/Icons';
+import type { AppState } from '../lib/types';
 
-export function Entrar() {
+export function Entrar({ state }: { state?: AppState | null }) {
   const { login, finishTwoFactor } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const from = (location.state as { from?: string } | null)?.from;
+  const registroAbierto = state?.settings.registration_open !== false;
+  const soloCatalogo = state?.settings.site_mode === 'catalogo';
 
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState<string | null>(null);
@@ -110,7 +113,11 @@ export function Entrar() {
           </span>
         </div>
         <h1>Entra en El Lirón</h1>
-        <p>Para reservar mesa, apuntarte a los torneos y llevar el control de tus partidas.</p>
+        <p>
+          {soloCatalogo
+            ? 'Zona del equipo de la tienda. Desde aquí se gestiona lo que ve el público.'
+            : 'Para reservar mesa, apuntarte a los torneos y llevar el control de tus partidas.'}
+        </p>
 
         <div style={{ display: 'grid', gap: 14 }}>
           <div className="field">
@@ -146,9 +153,11 @@ export function Entrar() {
 
         {error && <p className="error-msg">{error}</p>}
 
-        <p style={{ marginTop: 22, fontSize: '0.88rem', color: 'var(--muted)' }}>
-          ¿Todavía no tienes cuenta? <Link to="/registro" className="link-gold">Créala en un minuto</Link>
-        </p>
+        {registroAbierto && (
+          <p style={{ marginTop: 22, fontSize: '0.88rem', color: 'var(--muted)' }}>
+            ¿Todavía no tienes cuenta? <Link to="/registro" className="link-gold">Créala en un minuto</Link>
+          </p>
+        )}
         <p style={{ marginTop: 10, fontSize: '0.78rem', color: 'var(--muted-2)' }}>
           <Link to="/">← Volver a la web</Link>
         </p>
