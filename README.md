@@ -35,12 +35,14 @@ cuenta de administrador que indiques en `server/.env`. Para regenerar los datos 
 
 ## La identidad
 
-Los colores son los de la tienda: **verde oliva y gris piedra**, con la tipografía condensada del
-rótulo. El logo es la silueta del lirón, redibujada a partir de la fachada.
+El logo es el de la tienda, en `web/public/logo.png`. Toda la paleta sale de su verde, **#425642**:
+los fondos son versiones oscuras de ese tono y los textos y botones, versiones claras, para que se
+lea bien. La tipografía es la condensada del rótulo.
 
-**Si tienes el logo original**, déjalo en `web/public/` con el nombre `logo.svg`, `logo.png` o
-`logo.webp` y la web lo usará automáticamente en todas partes, sin tocar una línea de código. Si no
-hay ninguno, se dibuja la silueta.
+**Para cambiar el logo** basta con dejar otro fichero en `web/public/` llamado `logo.svg`,
+`logo.png` o `logo.webp`: la web lo detecta y lo usa en la cabecera, la portada, el pie y la
+pestaña del navegador. Si no hay ninguno, se dibuja una silueta de respaldo. Cuando el logo ya
+lleva el nombre escrito, la cabecera no lo repite al lado.
 
 ## Modo catálogo
 

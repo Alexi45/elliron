@@ -29,7 +29,8 @@ async function findLogo() {
   return null;
 }
 
-function useBrandLogo() {
+/** Devuelve la ruta del logo de la tienda, o null si no hay ninguno puesto */
+export function useBrandLogo() {
   const [src, setSrc] = useState<string | null>(resolved ?? null);
 
   useEffect(() => {
@@ -82,14 +83,14 @@ export function LironMark({ size = 40, className = '' }: { size?: number; classN
       {/* hocico */}
       <path
         d="M15 79c7 7 15 9 24 7"
-        stroke="var(--ink-2, #171A11)"
+        stroke="var(--ink-2, #191F19)"
         strokeWidth="3"
         strokeLinecap="round"
         opacity="0.42"
         fill="none"
       />
       {/* ojo */}
-      <circle cx="45" cy="58" r="7" fill="var(--ink, #101209)" />
+      <circle cx="45" cy="58" r="7" fill="var(--ink, #101410)" />
       <circle cx="42.6" cy="55.2" r="2.1" fill="currentColor" opacity="0.92" />
     </svg>
   );

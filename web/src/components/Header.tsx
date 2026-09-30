@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Logo } from './Icons';
+import { useBrandLogo } from './Logo';
 import { useAuth } from '../lib/auth';
 import type { AppState } from '../lib/types';
 
@@ -22,6 +23,7 @@ export function Header({ state }: { state: AppState | null }) {
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
   const { user, isStaff, logout } = useAuth();
+  const logoPropio = useBrandLogo();
   const onHome = pathname === '/';
 
   useEffect(() => {
@@ -44,9 +46,9 @@ export function Header({ state }: { state: AppState | null }) {
       <header className={`header ${stuck ? 'is-stuck' : ''}`}>
         <div className="shell header__inner">
           <Link to="/" className="brand" aria-label="El Lirón, inicio">
-            <Logo size={38} />
+            <Logo size={logoPropio ? 46 : 38} />
             <span>
-              <span className="brand__name">EL LIRÓN</span>
+              {!logoPropio && <span className="brand__name">EL LIRÓN</span>}
               <span className="brand__sub">Montequinto</span>
             </span>
           </Link>

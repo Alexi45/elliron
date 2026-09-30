@@ -1,19 +1,21 @@
 import { Link } from 'react-router-dom';
 import { IconInstagram, IconMapPin, IconTikTok, Logo } from './Icons';
+import { useBrandLogo } from './Logo';
 import type { Settings } from '../lib/types';
 
 export function Footer({ settings }: { settings: Settings | null }) {
   const year = new Date().getFullYear();
   const catalogo = settings?.site_mode === 'catalogo';
+  const logoPropio = useBrandLogo();
   return (
     <footer className="footer">
       <div className="shell">
         <div className="footer__grid">
           <div style={{ maxWidth: 320 }}>
             <div className="brand" style={{ marginBottom: 14 }}>
-              <Logo size={42} />
+              <Logo size={logoPropio ? 58 : 42} />
               <span>
-                <span className="brand__name">EL LIRÓN</span>
+                {!logoPropio && <span className="brand__name">EL LIRÓN</span>}
                 <span className="brand__sub">Juegos, café y libros</span>
               </span>
             </div>

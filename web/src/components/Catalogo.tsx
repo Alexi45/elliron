@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Reveal } from './Reveal';
+import { Logo } from './Logo';
 import { IconArrow, IconBook, IconDice, IconInstagram, IconManga, IconMapPin, IconPhone, IconSparkles } from './Icons';
 import type { Product, ProductCategory, Settings } from '../lib/types';
 
@@ -53,9 +54,14 @@ export function CabeceraCatalogo({ settings }: { settings: Settings }) {
     <section className="catalog-hero">
       <div className="shell">
         <Reveal>
-          <span className="eyebrow">Montequinto · Dos Hermanas</span>
-          <h1 className="hero__title catalog-hero__title">{settings.catalog_title}</h1>
-          <p className="lead">{settings.catalog_intro}</p>
+          <div className="catalog-hero__top">
+            <Logo size={150} className="catalog-hero__mark" />
+            <div>
+              <span className="eyebrow">Montequinto · Dos Hermanas</span>
+              <h1 className="hero__title catalog-hero__title">{settings.catalog_title}</h1>
+              <p className="lead">{settings.catalog_intro}</p>
+            </div>
+          </div>
         </Reveal>
 
         {tel && (

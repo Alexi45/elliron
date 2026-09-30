@@ -77,7 +77,7 @@ export async function buildEnrolment(secret, email, issuer = 'El Lirón') {
   const qr = await QRCode.toString(uri, {
     type: 'svg',
     margin: 1,
-    color: { dark: '#101209', light: '#CFDCA9' }
+    color: { dark: '#101410', light: '#BBD3BB' }
   });
   return { uri, qr };
 }
