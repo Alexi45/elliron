@@ -1,0 +1,25 @@
+# La forma más corta de tener HTTPS: Caddy saca y renueva el certificado solo.
+#   sudo apt install caddy
+#   sudo cp Caddyfile /etc/caddy/Caddyfile   (cambia el dominio y el correo)
+#   sudo systemctl reload caddy
+
+elliron.es, www.elliron.es {
+	encode zstd gzip
+
+	# El streaming de mesas en vivo no se puede bufferizar
+	@sse path /api/stream
+	reverse_proxy @sse 127.0.0.1:4000 {
+		flush_interval -1
+	}
+
+	reverse_proxy 127.0.0.1:4000
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+		-Server
+	}
+
+	log {
+		output file /var/log/caddy/elliron.log
+	}
+}

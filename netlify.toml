@@ -1,0 +1,43 @@
+# Cómo monta Netlify esta web.
+#   - el front se compila con Vite y se publica desde web/dist
+#   - todo lo que empieza por /api lo atiende la función del catálogo
+
+[build]
+  command = "npm run build:netlify"
+  publish = "web/dist"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Todo lo que empieza por /api lo atiende la función
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+  force = true
+
+# El front es una sola página: cualquier ruta la resuelve index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "DENY"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=()"
+
+# Los ficheros compilados llevan hash en el nombre: se cachean para siempre
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-store"

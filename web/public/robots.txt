@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /cuenta
+Disallow: /entrar
+Disallow: /registro
+
+Sitemap: https://TU-DOMINIO/sitemap.xml

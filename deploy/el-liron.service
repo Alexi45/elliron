@@ -1,0 +1,26 @@
+# Para arrancar sin Docker:
+#   sudo cp el-liron.service /etc/systemd/system/
+#   sudo systemctl enable --now el-liron
+
+[Unit]
+Description=Web de El Lirón
+After=network.target
+
+[Service]
+Type=simple
+User=liron
+WorkingDirectory=/srv/el-liron
+EnvironmentFile=/srv/el-liron/server/.env
+ExecStart=/usr/bin/node server/src/index.js
+Restart=always
+RestartSec=5
+
+# Encerrado en lo mínimo que necesita
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/srv/el-liron/server/data
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,21 @@
+{
+  "name": "el-liron",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Web de El Lir\u00f3n \u2014 cafeter\u00eda friki, Magic, juegos de mesa y manga en Montequinto (Dos Hermanas)",
+  "scripts": {
+    "dev": "concurrently -n api,web -c magenta,cyan \"npm:dev:api\" \"npm:dev:web\"",
+    "dev:api": "npm --prefix server run dev",
+    "dev:web": "npm --prefix web run dev",
+    "build": "npm --prefix web run build",
+    "start": "npm --prefix server start",
+    "install:all": "npm install && npm --prefix server install && npm --prefix web install",
+    "build:netlify": "npm --prefix web install --no-audit --no-fund && npm --prefix web run build"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}
