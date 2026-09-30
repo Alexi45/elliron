@@ -14,12 +14,9 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
-# Todo lo que empieza por /api lo atiende la función
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/api/:splat"
-  status = 200
-  force = true
+# Ojo: no pongas aquí una regla para /api/*. La función ya declara esa ruta
+# (`export const config = { path: '/api/*' }`) y una redirección se le
+# adelantaría, mandando la petición a una dirección que no existe.
 
 # El front es una sola página: cualquier ruta la resuelve index.html
 [[redirects]]
