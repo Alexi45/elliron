@@ -5,10 +5,14 @@
 [build]
   command = "npm run build:netlify"
   publish = "web/dist"
-  functions = "netlify/functions"
 
 [build.environment]
   NODE_VERSION = "22"
+
+# La función que atiende /api (catálogo, fotos y acceso del administrador)
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
 
 # Todo lo que empieza por /api lo atiende la función
 [[redirects]]
